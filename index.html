@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WasteBridge | Connecting Industrial Waste to Verified Recyclers</title>
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="WasteBridge is a secure B2B platform connecting industries generating recyclable waste with verified recycling companies. Build compliant and sustainable circular partnerships.">
+  <meta name="keywords" content="B2B recycling, industrial waste, circular economy, verified recyclers, scrap metals, plastic waste management, waste bidding platform">
+  <meta name="author" content="WasteBridge Team">
+  
+  <!-- Favicon placeholder (using green recycling icon) -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>♻️</text></svg>">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+  <link rel="stylesheet" href="./css/styles.css">
+  <script>
+    // Early global error and unhandled rejection diagnostic logger
+    window.addEventListener('error', function(event) {
+      if (document.body) {
+        document.body.innerHTML = `
+          <div style="padding: 3rem; text-align: center; font-family: sans-serif; color: #ef4444; background: #fff; z-index: 10000; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+            <i class="fas fa-exclamation-triangle" style="font-size: 3.5rem; margin-bottom: 1rem;"></i>
+            <h2 style="font-size: 1.8rem; margin-bottom: 0.5rem;">JavaScript Error Detected</h2>
+            <p style="font-weight: 600; font-size: 1.15rem; color: #334155; max-width: 700px; margin-bottom: 1rem;">${event.message}</p>
+            <p style="font-size: 0.9rem; color: #64748b;">File: ${event.filename} | Line: ${event.lineno}:${event.colno}</p>
+          </div>
+        `;
+      }
+    });
+    window.addEventListener('unhandledrejection', function(event) {
+      if (document.body) {
+        document.body.innerHTML = `
+          <div style="padding: 3rem; text-align: center; font-family: sans-serif; color: #ef4444; background: #fff; z-index: 10000; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+            <i class="fas fa-exclamation-triangle" style="font-size: 3.5rem; margin-bottom: 1rem;"></i>
+            <h2 style="font-size: 1.8rem; margin-bottom: 0.5rem;">Database Promise Rejection</h2>
+            <p style="font-weight: 600; font-size: 1.15rem; color: #334155; max-width: 700px; margin-bottom: 1rem;">${event.reason ? (event.reason.message || event.reason) : 'Unknown Promise Rejection'}</p>
+            ${event.reason && event.reason.stack ? `<pre style="text-align: left; background: #f1f5f9; padding: 1rem; border-radius: 4px; font-size: 0.8rem; max-width: 800px; margin: 0 auto; overflow-x: auto;">${event.reason.stack}</pre>` : ''}
+          </div>
+        `;
+      }
+    });
+  </script>
+</head>
+<body>
+
+  <!-- GLOBAL NAVIGATION HEADER -->
+  <header id="main-header">
+    <div class="container nav-container">
+      <a href="#home" class="logo" id="header-logo">
+        <i class="fas fa-recycle" style="color: var(--primary);"></i>
+        <div>
+          WasteBridge
+          <span class="logo-subtext">Connecting Waste to Value</span>
+        </div>
+      </a>
+      
+      <!-- Nav Links (Targeting dynamic view anchors on Home page or other routes) -->
+      <nav>
+        <ul class="nav-links" id="nav-links">
+          <li><a href="#home" class="active">Home</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#listings-anchor">Browse Waste</a></li>
+          <li><a href="#contact">Contact</a></li>
+          <li id="nav-dashboard-link" style="display: none;"><a href="#profile"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+        </ul>
+      </nav>
+
+      <!-- Auth Action Buttons (Login / Register / Profile info dynamically populated) -->
+      <div class="nav-actions" id="auth-actions">
+        <!-- Injected dynamically by app.js -->
+        <a href="#login" class="btn btn-secondary btn-sm">Login</a>
+        <a href="#register" class="btn btn-primary btn-sm">Register Company</a>
+      </div>
+
+      <!-- Mobile Hamburger Trigger -->
+      <button class="mobile-nav-toggle" id="mobile-toggle" aria-label="Toggle Navigation">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- DYNAMIC VIEW CONTAINER -->
+  <main id="app">
+    <!-- Views (Home, Login, Profile, Dashboards) render here dynamically -->
+    <div style="display: flex; align-items: center; justify-content: center; height: 100vh; flex-direction: column;">
+      <i class="fas fa-circle-notch fa-spin" style="font-size: 3rem; color: var(--primary); margin-bottom: 20px;"></i>
+      <p style="font-family: var(--font-body); font-weight: 500;">Loading WasteBridge Platform...</p>
+    </div>
+  </main>
+
+  <!-- Firebase Scripts (v8 compat SDK CDNs) -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+
+  <!-- External Library CDNs -->
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Core JS Bundle -->
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>
