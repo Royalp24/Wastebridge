@@ -45,6 +45,8 @@
 
 html {
   scroll-behavior: smooth;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 body {
@@ -309,6 +311,7 @@ header.scrolled {
   display: flex;
   gap: 1.25rem;
   margin-bottom: 3.5rem;
+  flex-wrap: wrap;
 }
 
 .hero-benefits {
@@ -2085,12 +2088,17 @@ footer {
 }
 
 @media (max-width: 768px) {
+  /* Global Container Padding Tweak to gain usable width */
+  .container {
+    padding: 0 1.25rem !important;
+  }
+
   /* Navbar Wrapping Dropdown */
   .nav-container {
     flex-wrap: wrap;
     height: auto !important;
     min-height: 80px;
-    padding: 1rem 1.5rem;
+    padding: 1rem 1.25rem;
   }
   
   .logo, #mobile-toggle {
@@ -2183,7 +2191,65 @@ footer {
   }
 }
 
+@media (max-width: 576px) {
+  /* Prevent CTA Box overflow */
+  .cta-box {
+    padding: 2rem 1.25rem !important;
+    gap: 1.5rem !important;
+  }
+
+  .cta-box h2 {
+    font-size: 1.75rem !important;
+  }
+
+  .cta-action {
+    width: 100%;
+  }
+
+  .cta-action .btn {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Prevent Greener features overflow */
+  .greener-features {
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem !important;
+  }
+
+  /* Browse Waste Filter Wrap */
+  .listings-filter-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .search-bar {
+    max-width: 100%;
+  }
+
+  .filter-group {
+    flex-direction: column;
+    width: 100%;
+    gap: 0.75rem;
+  }
+
+  .filter-select {
+    width: 100% !important;
+  }
+}
+
 @media (max-width: 480px) {
+  /* Logo scaling to prevent overflow on very small devices */
+  .logo {
+    font-size: 1.25rem !important;
+    gap: 0.5rem !important;
+  }
+  
+  .logo-subtext {
+    font-size: 0.6rem !important;
+  }
+
   .db-kpi-grid {
     grid-template-columns: 1fr;
     gap: 1rem;
