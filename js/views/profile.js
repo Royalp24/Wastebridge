@@ -42,7 +42,7 @@ export const ProfileView = {
 
           <form id="profile-settings-form">
             <!-- Basic Details Grid -->
-            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 1.5rem;">
+            <div class="grid-2-col" style="margin-bottom: 1.5rem;">
               <div class="form-group" style="margin-bottom: 0;">
                 <label for="prof-name">Company Name</label>
                 <div class="input-icon-wrapper">
@@ -68,7 +68,7 @@ export const ProfileView = {
               </div>
             </div>
 
-            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 1.5rem;">
+            <div class="grid-2-col" style="margin-bottom: 1.5rem;">
               <div class="form-group" style="margin-bottom: 0;">
                 <label for="prof-phone">Contact Phone Number</label>
                 <div class="input-icon-wrapper">
@@ -86,7 +86,7 @@ export const ProfileView = {
               </div>
             </div>
 
-            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+            <div class="grid-3-1-col" style="margin-bottom: 1.5rem;">
               <div class="form-group" style="margin-bottom: 0;">
                 <label for="prof-address">Corporate Address</label>
                 <div class="input-icon-wrapper">

@@ -148,10 +148,12 @@ const setupNavigationTriggers = () => {
   // Mobile Nav Toggle
   const toggleBtn = document.getElementById('mobile-toggle');
   const navLinks = document.getElementById('nav-links');
+  const authActions = document.getElementById('auth-actions');
   
   if (toggleBtn && navLinks) {
     toggleBtn.addEventListener('click', () => {
       navLinks.classList.toggle('active');
+      if (authActions) authActions.classList.toggle('active');
       const isExpanded = navLinks.classList.contains('active');
       toggleBtn.innerHTML = isExpanded ? '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
     });
@@ -160,6 +162,7 @@ const setupNavigationTriggers = () => {
     navLinks.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', () => {
         navLinks.classList.remove('active');
+        if (authActions) authActions.classList.remove('active');
         toggleBtn.innerHTML = '<i class="fas fa-bars"></i>';
       });
     });

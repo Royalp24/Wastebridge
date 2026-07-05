@@ -233,7 +233,7 @@ export const RecyclerView = {
                       <i class="fas fa-building"></i>
                     </div>
                   </div>
-                  <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 1.5rem;">
+                  <div class="grid-2-col" style="margin-bottom: 1.5rem;">
                     <div class="form-group" style="margin-bottom: 0;">
                       <label for="db-prof-phone">Contact Phone Number</label>
                       <div class="input-icon-wrapper">
@@ -249,7 +249,7 @@ export const RecyclerView = {
                       </div>
                     </div>
                   </div>
-                  <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+                  <div class="grid-3-1-col" style="margin-bottom: 1.5rem;">
                     <div class="form-group" style="margin-bottom: 0;">
                       <label for="db-prof-address">Corporate Address</label>
                       <div class="input-icon-wrapper">
