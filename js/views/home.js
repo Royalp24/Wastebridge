@@ -212,66 +212,7 @@ export const HomeView = {
         </div>
       </section>
 
-      <!-- PLATFORM PREVIEW -->
-      <section class="platform-preview">
-        <div class="container preview-grid">
-          <div class="laptop-mockup">
-            <div class="laptop-screen">
-              <div class="screen-content">
-                <div class="mock-sidebar">
-                  <div class="mock-logo"></div>
-                  <div class="mock-nav-item active"></div>
-                  <div class="mock-nav-item"></div>
-                  <div class="mock-nav-item"></div>
-                  <div class="mock-nav-item"></div>
-                  <div class="mock-nav-item"></div>
-                </div>
-                <div class="mock-main">
-                  <div class="mock-header"></div>
-                  <div class="mock-stats">
-                    <div class="mock-stat-box">
-                      <div class="bar"></div>
-                      <div class="num"></div>
-                    </div>
-                    <div class="mock-stat-box">
-                      <div class="bar"></div>
-                      <div class="num"></div>
-                    </div>
-                    <div class="mock-stat-box">
-                      <div class="bar"></div>
-                      <div class="num"></div>
-                    </div>
-                    <div class="mock-stat-box">
-                      <div class="bar"></div>
-                      <div class="num"></div>
-                    </div>
-                  </div>
-                  <div class="mock-charts">
-                    <div class="mock-chart-main">
-                      <div class="mock-chart-bar" style="height: 40%"></div>
-                      <div class="mock-chart-bar" style="height: 70%"></div>
-                      <div class="mock-chart-bar" style="height: 55%"></div>
-                      <div class="mock-chart-bar" style="height: 85%"></div>
-                      <div class="mock-chart-bar" style="height: 60%"></div>
-                    </div>
-                    <div class="mock-chart-circle">
-                      <div class="circle-donut"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="laptop-base"></div>
-          </div>
-          
-          <div class="preview-content">
-            <span class="tag">Platform Preview</span>
-            <h2>Powerful Dashboard for Better Decisions</h2>
-            <p>Get instant insights, manage active waste listings, track bidding statuses, and measure your environmental ESG impacts in real-time — all in one centralized interface.</p>
-            <a href="#login" class="btn btn-primary">Explore Demo Dashboard</a>
-          </div>
-        </div>
-      </section>
+
 
       <!-- GREENER TOMORROW STRIP -->
       <section class="greener-tomorrow">
