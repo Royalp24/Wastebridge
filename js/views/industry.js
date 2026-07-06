@@ -911,7 +911,14 @@ export const IndustryView = {
             }
           } else {
             const statusClass = b.status === 'accepted' ? 'badge-accepted' : 'badge-rejected';
-            actionsHtml = `<span class="badge ${statusClass}">${b.status}</span>`;
+            actionsHtml = `
+              <span class="badge ${statusClass}">${b.status}</span>
+              ${
+                b.status === 'accepted'
+                ? `<button class="btn btn-secondary btn-sm view-contact-btn" data-recycler-id="${b.recyclerId}" style="padding: 0.25rem 0.5rem; font-size: 0.725rem; margin-top: 0.25rem; display: block; border-color: var(--primary-light); color: var(--primary);"><i class="fas fa-address-card"></i> View Contact</button>`
+                : ''
+              }
+            `;
           }
 
           return `
@@ -944,6 +951,28 @@ export const IndustryView = {
           btn.addEventListener('click', async (e) => {
             const bidId = btn.getAttribute('data-id');
             await handleRespondToBid(bidId, false);
+          });
+        });
+
+        // Attach View Contact details handlers
+        const contactBtns = tableBody.querySelectorAll('.view-contact-btn');
+        contactBtns.forEach(btn => {
+          btn.addEventListener('click', async () => {
+            const recyclerId = btn.getAttribute('data-recycler-id');
+            const overlay = document.getElementById('profile-loader');
+            if (overlay) overlay.classList.add('active');
+            try {
+              const recyclerProfile = await dbService.getUserById(recyclerId);
+              if (recyclerProfile) {
+                openContactDetailsModal(recyclerProfile, "Recycling Agency");
+              } else {
+                showToast("Could not find recycler contact details.", "error");
+              }
+            } catch (err) {
+              showToast("Failed to fetch contact details.", "error");
+            } finally {
+              if (overlay) overlay.classList.remove('active');
+            }
           });
         });
 
@@ -1104,5 +1133,97 @@ export const IndustryView = {
     await loadOverviewData();
   }
 };
+
+// --- POPUP CONTACT DETAILS MODAL RENDERER ---
+function openContactDetailsModal(profile, roleTitle) {
+  const backdrop = document.createElement('div');
+  backdrop.className = 'wb-modal-backdrop';
+  backdrop.id = 'contact-details-modal-container';
+
+  backdrop.innerHTML = `
+    <div class="wb-modal-card" style="max-width: 480px; width: 90%; border-radius: var(--radius-lg); background: var(--white); overflow: hidden; box-shadow: var(--shadow-xl); position: relative; animation: modalSlideUp 0.3s ease-out; margin: 2rem auto; z-index: 2100;">
+      <!-- Modal Close Icon -->
+      <button id="close-contact-modal-icon" style="position: absolute; top: 1rem; right: 1rem; width: 32px; height: 32px; border-radius: 50%; background: var(--neutral-light); color: var(--neutral-body); display: flex; align-items: center; justify-content: center; font-size: 1rem; transition: var(--transition-smooth); border: 1px solid var(--neutral-border); z-index: 100; cursor: pointer;">
+        <i class="fas fa-times"></i>
+      </button>
+      
+      <!-- Content Body -->
+      <div style="padding: 2rem; display: flex; flex-direction: column; gap: 1.25rem;">
+        <div style="text-align: center; border-bottom: 1px solid var(--neutral-border); padding-bottom: 1.5rem; margin-bottom: 0.25rem;">
+          <div style="width: 60px; height: 60px; border-radius: 50%; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.75rem; margin: 0 auto 0.75rem auto;">
+            <i class="fas fa-building"></i>
+          </div>
+          <h2 style="font-size: 1.4rem; color: var(--neutral-dark); margin: 0 0 0.25rem 0;">${escapeHtml(profile.name)}</h2>
+          <span style="font-size: 0.75rem; color: var(--primary-dark); font-weight: 700; background: var(--primary-light); padding: 0.25rem 0.6rem; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.05em;">${roleTitle}</span>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 1rem; font-size: 0.9rem;">
+          <div style="display: flex; gap: 0.75rem; align-items: flex-start;">
+            <i class="fas fa-envelope" style="color: var(--primary); width: 16px; margin-top: 0.2rem;"></i>
+            <div>
+              <span style="color: #94a3b8; font-size: 0.75rem; display: block; text-transform: uppercase; font-weight: 700;">Corporate Email</span>
+              <a href="mailto:${escapeHtml(profile.email)}" style="color: var(--neutral-dark); font-weight: 600; text-decoration: underline;">${escapeHtml(profile.email)}</a>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 0.75rem; align-items: flex-start;">
+            <i class="fas fa-phone" style="color: var(--primary); width: 16px; margin-top: 0.2rem;"></i>
+            <div>
+              <span style="color: #94a3b8; font-size: 0.75rem; display: block; text-transform: uppercase; font-weight: 700;">Contact Phone</span>
+              <strong style="color: var(--neutral-dark);">${escapeHtml(profile.phone || 'Not Provided')}</strong>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 0.75rem; align-items: flex-start;">
+            <i class="fas fa-percent" style="color: var(--primary); width: 16px; margin-top: 0.2rem;"></i>
+            <div>
+              <span style="color: #94a3b8; font-size: 0.75rem; display: block; text-transform: uppercase; font-weight: 700;">GSTIN / Tax Registration</span>
+              <strong style="color: var(--neutral-dark); text-transform: uppercase;">${escapeHtml(profile.gstin || 'Not Provided')}</strong>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 0.75rem; align-items: flex-start;">
+            <i class="fas fa-map-marker-alt" style="color: var(--primary); width: 16px; margin-top: 0.2rem;"></i>
+            <div>
+              <span style="color: #94a3b8; font-size: 0.75rem; display: block; text-transform: uppercase; font-weight: 700;">Corporate Address</span>
+              <strong style="color: var(--neutral-dark); font-weight: 600; line-height: 1.4;">${escapeHtml(profile.address || 'Not Provided')}${profile.pincode ? `, Pin - ${profile.pincode}` : ''}</strong>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 0.75rem; align-items: flex-start;">
+            <i class="fas fa-globe" style="color: var(--primary); width: 16px; margin-top: 0.2rem;"></i>
+            <div>
+              <span style="color: #94a3b8; font-size: 0.75rem; display: block; text-transform: uppercase; font-weight: 700;">Company Website</span>
+              ${
+                profile.website 
+                ? `<a href="${escapeHtml(profile.website)}" target="_blank" style="color: var(--primary); font-weight: 700; text-decoration: underline;">${escapeHtml(profile.website)} <i class="fas fa-external-link-alt" style="font-size: 0.75rem;"></i></a>`
+                : `<strong style="color: var(--neutral-body);">Not Provided</strong>`
+              }
+            </div>
+          </div>
+        </div>
+
+        <button id="modal-close-contact-btn" class="btn btn-primary" style="margin-top: 0.75rem; width: 100%;">Close Contact Card</button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(backdrop);
+
+  const closeModal = () => {
+    backdrop.style.opacity = '0';
+    backdrop.style.transition = 'opacity 0.2s ease-out';
+    setTimeout(() => backdrop.remove(), 200);
+  };
+
+  backdrop.addEventListener('click', (e) => {
+    if (e.target === backdrop) closeModal();
+  });
+
+  const closeIcon = backdrop.querySelector('#close-contact-modal-icon');
+  const closeBtn = backdrop.querySelector('#modal-close-contact-btn');
+  if (closeIcon) closeIcon.addEventListener('click', closeModal);
+  if (closeBtn) closeBtn.addEventListener('click', closeModal);
+}
 
 export default IndustryView;

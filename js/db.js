@@ -300,6 +300,18 @@ export const dbService = {
     }
   },
 
+  getUserById: async (uid) => {
+    if (dbType === 'firebase') {
+      const paths = ['Industry', 'Recycler', 'Admin'];
+      const snapshots = await Promise.all(paths.map(r => db.ref(`users/${r}/${uid}`).once('value')));
+      const foundSnap = snapshots.find(snap => snap.exists());
+      return foundSnap ? foundSnap.val() : null;
+    } else {
+      const users = mockDb.get('users');
+      return users.find(u => u.uid === uid) || null;
+    }
+  },
+
   // --- ADMIN FUNCTIONS ---
   getPendingVerifications: async () => {
     // Left as compatibility helper (verifications are bypassed)
