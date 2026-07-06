@@ -802,13 +802,7 @@ export const RecyclerView = {
       document.getElementById('modal-listing-id').value = listingId;
       document.getElementById('modal-industry-name').value = industry;
       document.getElementById('modal-material-title').textContent = `Quote for: ${title}`;
-      
       if (modal) modal.style.display = 'flex';
-    }
-
-      } catch (err) {
-        console.error("Error loading browse waste grid:", err);
-      }
     }
 
     async function loadMyBids() {
