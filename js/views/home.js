@@ -1,6 +1,18 @@
 // home.js - Home View (Public Landing Page)
 import { dbService } from '../db.js';
 
+// Helper HTML Escaper (File Scope)
+function escapeHtml(unsafe) {
+  if (!unsafe) return '';
+  return unsafe
+    .toString()
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 export const HomeView = {
   render: async (currentUser) => {
     return `
@@ -536,16 +548,6 @@ export const HomeView = {
         `;
       }
     };
-
-    // Helper HTML Escaper
-    function escapeHtml(unsafe) {
-      return unsafe
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-    }
 
     // Bid action handler
     const handleBidClick = (listingId, user) => {
