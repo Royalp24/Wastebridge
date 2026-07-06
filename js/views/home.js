@@ -460,19 +460,19 @@ export const HomeView = {
           else if (l.category === 'Wood') categoryIcon = 'fa-tree';
 
           return `
-            <div class="listing-card">
+            <div class="listing-card" style="position: relative;">
               ${
                 l.imageUrl 
-                ? `<div class="listing-image" style="background-image: url('${escapeHtml(l.imageUrl)}'); height: 180px; background-size: cover; background-position: center; border-top-left-radius: var(--radius-md); border-top-right-radius: var(--radius-md); position: relative;"></div>`
-                : `<div class="listing-image-placeholder"><i class="fas ${categoryIcon}"></i></div>`
+                ? `<div class="listing-image view-card-details" data-id="${l.id}" style="background-image: url('${escapeHtml(l.imageUrl)}'); height: 180px; background-size: cover; background-position: center; border-top-left-radius: var(--radius-md); border-top-right-radius: var(--radius-md); position: relative; cursor: pointer;"></div>`
+                : `<div class="listing-image-placeholder view-card-details" data-id="${l.id}" style="cursor: pointer;"><i class="fas ${categoryIcon}"></i></div>`
               }
               <div class="listing-content">
                 <div class="listing-header">
                   <span class="listing-tag">${l.category}</span>
                   <span class="listing-date">${formattedDate}</span>
                 </div>
-                <h3>${escapeHtml(l.title)}</h3>
-                <p style="font-size: 0.9rem; color: var(--neutral-body); margin-bottom: 1rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                <h3 class="view-card-details" data-id="${l.id}" style="cursor: pointer; margin-bottom: 0.5rem; transition: color 0.2s;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--neutral-dark)'">${escapeHtml(l.title)}</h3>
+                <p style="font-size: 0.9rem; color: var(--neutral-body); margin-bottom: 1rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
                   ${escapeHtml(l.description)}
                 </p>
                 <div class="listing-meta">
@@ -485,15 +485,18 @@ export const HomeView = {
                     <span><strong>Bids:</strong> ${l.bidsCount || 0}</span>
                   </div>
                 </div>
-                <div class="listing-footer">
-                  <span class="listing-location">
+                <div class="listing-footer" style="gap: 0.5rem; flex-wrap: wrap;">
+                  <span class="listing-location" style="font-size: 0.8rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 110px;">
                     <i class="fas fa-map-marker-alt"></i> ${escapeHtml(l.location)}
                   </span>
-                  ${
-                    l.status === 'accepted' 
-                    ? `<span style="color: var(--neutral-body); font-weight: 700; font-size: 0.9rem;"><i class="fas fa-check-circle" style="color: var(--accent);"></i> Closed</span>` 
-                    : `<button class="btn btn-primary btn-sm apply-bid-btn" data-id="${l.id}">Apply Bid</button>`
-                  }
+                  <div style="display: flex; gap: 0.35rem;">
+                    <button class="btn btn-secondary btn-sm view-details-btn" data-id="${l.id}" style="padding: 0.4rem 0.65rem; border-color: var(--neutral-border); color: var(--neutral-body); font-size: 0.8rem;"><i class="fas fa-info-circle"></i> Details</button>
+                    ${
+                      l.status === 'accepted' 
+                      ? `<span class="badge badge-accepted" style="padding: 0.4rem 0.65rem; font-size: 0.725rem;"><i class="fas fa-check-circle"></i> Closed</span>` 
+                      : `<button class="btn btn-primary btn-sm apply-bid-btn" data-id="${l.id}" style="padding: 0.4rem 0.65rem; font-size: 0.8rem;">Apply Bid</button>`
+                    }
+                  </div>
                 </div>
               </div>
             </div>
@@ -504,8 +507,22 @@ export const HomeView = {
         const bidBtns = container.querySelectorAll('.apply-bid-btn');
         bidBtns.forEach(btn => {
           btn.addEventListener('click', (e) => {
+            e.stopPropagation();
             const listingId = e.target.getAttribute('data-id');
             handleBidClick(listingId, currentUser);
+          });
+        });
+
+        // Attach event listeners to Details triggers
+        const detailsTriggers = container.querySelectorAll('.view-card-details, .view-details-btn');
+        detailsTriggers.forEach(trigger => {
+          trigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const listingId = trigger.getAttribute('data-id');
+            const selectedListing = listings.find(l => l.id === listingId);
+            if (selectedListing) {
+              openDetailsModal(selectedListing, currentUser);
+            }
           });
         });
 
@@ -637,4 +654,159 @@ export const HomeView = {
     await renderListings();
   }
 };
+
+// --- POPUP DETAILS MODAL RENDERER ---
+function openDetailsModal(listing, currentUser) {
+  const backdrop = document.createElement('div');
+  backdrop.className = 'wb-modal-backdrop';
+  backdrop.id = 'listing-details-modal-container';
+
+  const formattedDate = new Date(listing.createdAt).toLocaleDateString('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric'
+  });
+
+  let categoryIcon = 'fa-recycle';
+  if (listing.category === 'Metal') categoryIcon = 'fa-cog';
+  else if (listing.category === 'Plastic') categoryIcon = 'fa-prescription-bottle';
+  else if (listing.category === 'Paper') categoryIcon = 'fa-file-alt';
+  else if (listing.category === 'Glass') categoryIcon = 'fa-wine-bottle';
+  else if (listing.category === 'Rubber') categoryIcon = 'fa-compact-disc';
+  else if (listing.category === 'Electronic') categoryIcon = 'fa-laptop';
+  else if (listing.category === 'Textile') categoryIcon = 'fa-tshirt';
+  else if (listing.category === 'Chemical') categoryIcon = 'fa-flask';
+  else if (listing.category === 'Organic') categoryIcon = 'fa-leaf';
+  else if (listing.category === 'Wood') categoryIcon = 'fa-tree';
+
+  backdrop.innerHTML = `
+    <div class="wb-modal-card" style="max-width: 600px; width: 95%; max-height: 90vh; border-radius: var(--radius-lg); background: var(--white); overflow-y: auto; box-shadow: var(--shadow-xl); position: relative; animation: modalSlideUp 0.3s ease-out; margin: 2rem auto; display: flex; flex-direction: column;">
+      <!-- Large Header Image -->
+      ${
+        listing.imageUrl
+        ? `<div style="background-image: url('${escapeHtml(listing.imageUrl)}'); height: 260px; background-size: cover; background-position: center; border-bottom: 1px solid var(--neutral-border); position: relative; flex-shrink: 0;"></div>`
+        : `<div style="height: 180px; background: linear-gradient(135deg, var(--primary-light) 0%, #bbf7d0 100%); display: flex; align-items: center; justify-content: center; font-size: 5rem; color: var(--primary); flex-shrink: 0;"><i class="fas ${categoryIcon}"></i></div>`
+      }
+      
+      <!-- Modal Close Icon -->
+      <button id="close-details-modal-icon" style="position: absolute; top: 1rem; right: 1rem; width: 36px; height: 36px; border-radius: 50%; background: rgba(0,0,0,0.5); color: var(--white); display: flex; align-items: center; justify-content: center; font-size: 1.15rem; transition: var(--transition-smooth); border: none; z-index: 100; cursor: pointer;">
+        <i class="fas fa-times"></i>
+      </button>
+      
+      <!-- Content Body -->
+      <div style="padding: 2rem; flex-grow: 1; display: flex; flex-direction: column; gap: 1.25rem;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+          <span class="listing-tag" style="background-color: var(--primary-light); color: var(--primary); padding: 0.25rem 0.6rem; border-radius: 4px; font-size: 0.725rem; font-weight:700; text-transform: uppercase;">${listing.category}</span>
+          <span style="font-size: 0.8rem; color: var(--neutral-body); font-weight: 500;"><i class="fas fa-calendar-alt"></i> ${formattedDate}</span>
+        </div>
+        
+        <h2 style="font-size: 1.6rem; color: var(--neutral-dark); line-height: 1.25; margin: 0;">${escapeHtml(listing.title)}</h2>
+        
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; background: var(--neutral-light); padding: 1rem; border-radius: var(--radius-md); font-size: 0.85rem;">
+          <div>
+            <span style="color: var(--neutral-body); display: block; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; margin-bottom: 2px;">Quantity</span>
+            <strong style="color: var(--neutral-dark); font-size: 1rem;">${escapeHtml(listing.quantity)}</strong>
+          </div>
+          <div>
+            <span style="color: var(--neutral-body); display: block; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; margin-bottom: 2px;">Bids Submitted</span>
+            <strong style="color: var(--primary); font-size: 1rem;">${listing.bidsCount || 0} bids</strong>
+          </div>
+          <div>
+            <span style="color: var(--neutral-body); display: block; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; margin-bottom: 2px;">Industry</span>
+            <strong style="color: var(--neutral-dark); font-size: 0.85rem; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHtml(listing.industryName)}</strong>
+          </div>
+        </div>
+        
+        <!-- Detailed Description Section -->
+        <div>
+          <h4 style="font-size: 0.85rem; font-weight: 700; color: var(--neutral-dark); margin: 0 0 0.5rem 0; text-transform: uppercase; letter-spacing: 0.05em;">Material Description</h4>
+          <p style="font-size: 0.925rem; color: var(--neutral-body); line-height: 1.6; background: var(--neutral-light); padding: 1rem; border-radius: var(--radius-md); border-left: 3.5px solid var(--primary); margin: 0; white-space: pre-wrap; max-height: 180px; overflow-y: auto;">
+            ${escapeHtml(listing.description)}
+          </p>
+        </div>
+
+        <!-- Footer / Location / Actions -->
+        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--neutral-border); padding-top: 1.25rem; margin-top: auto; gap: 1rem; flex-wrap: wrap;">
+          <span style="font-size: 0.85rem; color: var(--neutral-body); display: flex; align-items: center; gap: 0.35rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 250px;">
+            <i class="fas fa-map-marker-alt" style="color: var(--primary);"></i> ${escapeHtml(listing.location)}
+          </span>
+          <div style="display: flex; gap: 0.5rem;">
+            <button id="modal-close-btn" class="btn btn-secondary btn-sm" style="padding: 0.5rem 1rem;">Close</button>
+            ${
+              listing.status === 'accepted' 
+              ? `<span class="badge badge-accepted" style="padding: 0.5rem 1rem;"><i class="fas fa-check-circle"></i> Closed</span>` 
+              : `<button id="modal-bid-action" class="btn btn-primary btn-sm" style="padding: 0.5rem 1rem;">Apply Bid</button>`
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(backdrop);
+
+  // Close helper
+  const closeModal = () => {
+    backdrop.style.opacity = '0';
+    backdrop.style.transition = 'opacity 0.2s ease-out';
+    setTimeout(() => {
+      backdrop.remove();
+    }, 200);
+  };
+
+  backdrop.addEventListener('click', (e) => {
+    if (e.target === backdrop) closeModal();
+  });
+
+  const closeIcon = backdrop.querySelector('#close-details-modal-icon');
+  const closeBtn = backdrop.querySelector('#modal-close-btn');
+  if (closeIcon) closeIcon.addEventListener('click', closeModal);
+  if (closeBtn) closeBtn.addEventListener('click', closeModal);
+
+  // Modal action Apply Bid trigger
+  const bidBtn = backdrop.querySelector('#modal-bid-action');
+  if (bidBtn) {
+    bidBtn.addEventListener('click', () => {
+      closeModal();
+      // Delegate to global click handler
+      if (!currentUser) {
+        if (window.Toastify) {
+          window.Toastify({
+            text: "Please sign in to place a bid on this listing.",
+            duration: 2500,
+            backgroundColor: "linear-gradient(to right, #f59e0b, #d97706)",
+            gravity: "top",
+            position: "right"
+          }).showToast();
+        }
+        setTimeout(() => {
+          window.location.hash = '#login';
+        }, 1500);
+      } else if (currentUser.role !== 'recycler') {
+        if (window.Toastify) {
+          window.Toastify({
+            text: "Only verified Recyclers can bid on listings.",
+            duration: 3000,
+            backgroundColor: "linear-gradient(to right, #ef4444, #dc2626)",
+            gravity: "top",
+            position: "right"
+          }).showToast();
+        }
+      } else if (currentUser.status !== 'approved') {
+        if (window.Toastify) {
+          window.Toastify({
+            text: "Your account is pending verification. Please wait for admin approval.",
+            duration: 3500,
+            backgroundColor: "linear-gradient(to right, #ef4444, #dc2626)",
+            gravity: "top",
+            position: "right"
+          }).showToast();
+        }
+      } else {
+        window.location.hash = `#recycler?bid=${listing.id}`;
+      }
+    });
+  }
+}
+
 export default HomeView;

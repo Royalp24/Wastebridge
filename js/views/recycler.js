@@ -725,7 +725,7 @@ export const RecyclerView = {
             <div class="db-card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between; border-color: var(--neutral-border);">
               ${
                 l.imageUrl 
-                ? `<div style="background-image: url('${escapeHtml(l.imageUrl)}'); height: 160px; background-size: cover; background-position: center; border-top-left-radius: var(--radius-md); border-top-right-radius: var(--radius-md);"></div>`
+                ? `<div class="view-card-details" data-id="${l.id}" style="background-image: url('${escapeHtml(l.imageUrl)}'); height: 160px; background-size: cover; background-position: center; border-top-left-radius: var(--radius-md); border-top-right-radius: var(--radius-md); cursor: pointer;"></div>`
                 : ''
               }
               <div class="db-card-body" style="padding: 1.5rem;">
@@ -733,7 +733,7 @@ export const RecyclerView = {
                   <span class="listing-tag" style="background-color: var(--primary-light); color: var(--primary); padding: 0.25rem 0.6rem; border-radius: 4px; font-size: 0.725rem; font-weight:700; text-transform: uppercase;">${l.category}</span>
                   <span style="font-size: 0.8rem; color: var(--neutral-body); font-weight: 500;"><i class="fas fa-calendar-alt"></i> ${formattedDate}</span>
                 </div>
-                <h3 style="font-size: 1.15rem; font-family: var(--font-heading); margin-bottom: 0.5rem; color: var(--neutral-dark); line-height: 1.3;">${escapeHtml(l.title)}</h3>
+                <h3 class="view-card-details" data-id="${l.id}" style="font-size: 1.15rem; font-family: var(--font-heading); margin-bottom: 0.5rem; color: var(--neutral-dark); line-height: 1.3; cursor: pointer; transition: color 0.2s;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--neutral-dark)'">${escapeHtml(l.title)}</h3>
                 <p style="font-size: 0.85rem; color: var(--neutral-body); margin-bottom: 1.25rem; line-height: 1.5; height: 60px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;">${escapeHtml(l.description)}</p>
                 
                 <div style="border-top: 1px solid var(--neutral-border); padding-top: 1rem; display: flex; flex-direction: column; gap: 0.5rem;">
@@ -749,11 +749,17 @@ export const RecyclerView = {
                   </div>
                 </div>
               </div>
-              <div class="db-card-header" style="background: var(--neutral-light); padding: 1rem 1.5rem; border-top: 1px solid var(--neutral-border); justify-content: center;">
+              <div class="db-card-header" style="background: var(--neutral-light); padding: 1rem; border-top: 1px solid var(--neutral-border); justify-content: center; gap: 0.5rem;">
                 ${
                   (isPending || isPaused)
-                  ? `<button class="btn btn-secondary btn-sm" disabled style="width:100%; opacity: 0.5; cursor: not-allowed;"><i class="fas fa-lock"></i> ${isPaused ? 'Account Paused' : 'Pending Verification'}</button>`
-                  : `<button class="btn btn-primary btn-sm place-bid-trigger-btn" data-id="${l.id}" data-title="${escapeHtml(l.title)}" data-industry="${escapeHtml(l.industryName)}" style="width: 100%; padding: 0.6rem;"><i class="fas fa-gavel"></i> Place Bid Quote</button>`
+                  ? `<div style="display: flex; gap: 0.5rem; width: 100%;">
+                       <button class="btn btn-secondary btn-sm view-details-btn" data-id="${l.id}" style="flex: 1; padding: 0.6rem;"><i class="fas fa-info-circle"></i> Details</button>
+                       <button class="btn btn-primary btn-sm" disabled style="flex: 1.5; padding: 0.6rem; opacity: 0.5; cursor: not-allowed;"><i class="fas fa-lock"></i> Locked</button>
+                     </div>`
+                  : `<div style="display: flex; gap: 0.5rem; width: 100%;">
+                       <button class="btn btn-secondary btn-sm view-details-btn" data-id="${l.id}" style="flex: 1; padding: 0.6rem; border-color: var(--neutral-border); color: var(--neutral-body);"><i class="fas fa-info-circle"></i> Details</button>
+                       <button class="btn btn-primary btn-sm place-bid-trigger-btn" data-id="${l.id}" data-title="${escapeHtml(l.title)}" data-industry="${escapeHtml(l.industryName)}" style="flex: 1.5; padding: 0.6rem;"><i class="fas fa-gavel"></i> Place Bid</button>
+                     </div>`
                 }
               </div>
             </div>
@@ -768,14 +774,37 @@ export const RecyclerView = {
             const title = btn.getAttribute('data-title');
             const industry = btn.getAttribute('data-industry');
 
-            // Open Modal and populate hidden inputs
-            document.getElementById('modal-listing-id').value = listingId;
-            document.getElementById('modal-industry-name').value = industry;
-            document.getElementById('modal-material-title').textContent = `Quote for: ${title}`;
-            
-            if (modal) modal.style.display = 'flex';
+            openPlaceBidModal(listingId, title, industry);
           });
         });
+
+        // Attach Details Button/Card Handlers
+        const detailsTriggers = container.querySelectorAll('.view-card-details, .view-details-btn');
+        detailsTriggers.forEach(trigger => {
+          trigger.addEventListener('click', () => {
+            const listingId = trigger.getAttribute('data-id');
+            const selectedListing = listings.find(l => l.id === listingId);
+            if (selectedListing) {
+              openDetailsModal(selectedListing, currentUser, (lId, lTitle, lInd) => {
+                openPlaceBidModal(lId, lTitle, lInd);
+              });
+            }
+          });
+        });
+
+      } catch (err) {
+        console.error("Error loading browse waste grid:", err);
+      }
+    }
+
+    function openPlaceBidModal(listingId, title, industry) {
+      // Open Modal and populate hidden inputs
+      document.getElementById('modal-listing-id').value = listingId;
+      document.getElementById('modal-industry-name').value = industry;
+      document.getElementById('modal-material-title').textContent = `Quote for: ${title}`;
+      
+      if (modal) modal.style.display = 'flex';
+    }
 
       } catch (err) {
         console.error("Error loading browse waste grid:", err);
@@ -996,5 +1025,130 @@ export const RecyclerView = {
     await loadOverviewData();
   }
 };
+
+// --- POPUP DETAILS MODAL RENDERER ---
+function openDetailsModal(listing, currentUser, onPlaceBid) {
+  const backdrop = document.createElement('div');
+  backdrop.className = 'wb-modal-backdrop';
+  backdrop.id = 'listing-details-modal-container';
+
+  const formattedDate = new Date(listing.createdAt).toLocaleDateString('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric'
+  });
+
+  let categoryIcon = 'fa-recycle';
+  if (listing.category === 'Metal') categoryIcon = 'fa-cog';
+  else if (listing.category === 'Plastic') categoryIcon = 'fa-prescription-bottle';
+  else if (listing.category === 'Paper') categoryIcon = 'fa-file-alt';
+  else if (listing.category === 'Glass') categoryIcon = 'fa-wine-bottle';
+  else if (listing.category === 'Rubber') categoryIcon = 'fa-compact-disc';
+  else if (listing.category === 'Electronic') categoryIcon = 'fa-laptop';
+  else if (listing.category === 'Textile') categoryIcon = 'fa-tshirt';
+  else if (listing.category === 'Chemical') categoryIcon = 'fa-flask';
+  else if (listing.category === 'Organic') categoryIcon = 'fa-leaf';
+  else if (listing.category === 'Wood') categoryIcon = 'fa-tree';
+
+  const isPending = currentUser.status === 'pending_verification' || currentUser.status === 'pending';
+  const isPaused = currentUser.status === 'paused' || currentUser.status === 'suspended';
+
+  backdrop.innerHTML = `
+    <div class="wb-modal-card" style="max-width: 600px; width: 95%; max-height: 90vh; border-radius: var(--radius-lg); background: var(--white); overflow-y: auto; box-shadow: var(--shadow-xl); position: relative; animation: modalSlideUp 0.3s ease-out; margin: 2rem auto; display: flex; flex-direction: column;">
+      <!-- Large Header Image -->
+      ${
+        listing.imageUrl
+        ? `<div style="background-image: url('${escapeHtml(listing.imageUrl)}'); height: 260px; background-size: cover; background-position: center; border-bottom: 1px solid var(--neutral-border); position: relative; flex-shrink: 0;"></div>`
+        : `<div style="height: 180px; background: linear-gradient(135deg, var(--primary-light) 0%, #bbf7d0 100%); display: flex; align-items: center; justify-content: center; font-size: 5rem; color: var(--primary); flex-shrink: 0;"><i class="fas ${categoryIcon}"></i></div>`
+      }
+      
+      <!-- Modal Close Icon -->
+      <button id="close-details-modal-icon" style="position: absolute; top: 1rem; right: 1rem; width: 36px; height: 36px; border-radius: 50%; background: rgba(0,0,0,0.5); color: var(--white); display: flex; align-items: center; justify-content: center; font-size: 1.15rem; transition: var(--transition-smooth); border: none; z-index: 100; cursor: pointer;">
+        <i class="fas fa-times"></i>
+      </button>
+      
+      <!-- Content Body -->
+      <div style="padding: 2rem; flex-grow: 1; display: flex; flex-direction: column; gap: 1.25rem;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+          <span class="listing-tag" style="background-color: var(--primary-light); color: var(--primary); padding: 0.25rem 0.6rem; border-radius: 4px; font-size: 0.725rem; font-weight:700; text-transform: uppercase;">${listing.category}</span>
+          <span style="font-size: 0.8rem; color: var(--neutral-body); font-weight: 500;"><i class="fas fa-calendar-alt"></i> ${formattedDate}</span>
+        </div>
+        
+        <h2 style="font-size: 1.6rem; color: var(--neutral-dark); line-height: 1.25; margin: 0;">${escapeHtml(listing.title)}</h2>
+        
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; background: var(--neutral-light); padding: 1rem; border-radius: var(--radius-md); font-size: 0.85rem;">
+          <div>
+            <span style="color: var(--neutral-body); display: block; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; margin-bottom: 2px;">Quantity</span>
+            <strong style="color: var(--neutral-dark); font-size: 1rem;">${escapeHtml(listing.quantity)}</strong>
+          </div>
+          <div>
+            <span style="color: var(--neutral-body); display: block; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; margin-bottom: 2px;">Bids Submitted</span>
+            <strong style="color: var(--primary); font-size: 1rem;">${listing.bidsCount || 0} bids</strong>
+          </div>
+          <div>
+            <span style="color: var(--neutral-body); display: block; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; margin-bottom: 2px;">Industry</span>
+            <strong style="color: var(--neutral-dark); font-size: 0.85rem; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHtml(listing.industryName)}</strong>
+          </div>
+        </div>
+        
+        <!-- Detailed Description Section -->
+        <div>
+          <h4 style="font-size: 0.85rem; font-weight: 700; color: var(--neutral-dark); margin: 0 0 0.5rem 0; text-transform: uppercase; letter-spacing: 0.05em;">Material Description</h4>
+          <p style="font-size: 0.925rem; color: var(--neutral-body); line-height: 1.6; background: var(--neutral-light); padding: 1rem; border-radius: var(--radius-md); border-left: 3.5px solid var(--primary); margin: 0; white-space: pre-wrap; max-height: 180px; overflow-y: auto;">
+            ${escapeHtml(listing.description)}
+          </p>
+        </div>
+
+        <!-- Footer / Location / Actions -->
+        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--neutral-border); padding-top: 1.25rem; margin-top: auto; gap: 1rem; flex-wrap: wrap;">
+          <span style="font-size: 0.85rem; color: var(--neutral-body); display: flex; align-items: center; gap: 0.35rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 250px;">
+            <i class="fas fa-map-marker-alt" style="color: var(--primary);"></i> ${escapeHtml(listing.location)}
+          </span>
+          <div style="display: flex; gap: 0.5rem;">
+            <button id="modal-close-btn" class="btn btn-secondary btn-sm" style="padding: 0.5rem 1rem;">Close</button>
+            ${
+              listing.status === 'accepted' 
+              ? `<span class="badge badge-accepted" style="padding: 0.5rem 1rem;"><i class="fas fa-check-circle"></i> Closed</span>` 
+              : (isPending || isPaused)
+                ? `<button class="btn btn-primary btn-sm" disabled style="padding: 0.5rem 1rem; opacity: 0.5; cursor: not-allowed;"><i class="fas fa-lock"></i> Locked</button>`
+                : `<button id="modal-bid-action" class="btn btn-primary btn-sm" style="padding: 0.5rem 1rem;"><i class="fas fa-gavel"></i> Place Bid</button>`
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(backdrop);
+
+  // Close helper
+  const closeModal = () => {
+    backdrop.style.opacity = '0';
+    backdrop.style.transition = 'opacity 0.2s ease-out';
+    setTimeout(() => {
+      backdrop.remove();
+    }, 200);
+  };
+
+  backdrop.addEventListener('click', (e) => {
+    if (e.target === backdrop) closeModal();
+  });
+
+  const closeIcon = backdrop.querySelector('#close-details-modal-icon');
+  const closeBtn = backdrop.querySelector('#modal-close-btn');
+  if (closeIcon) closeIcon.addEventListener('click', closeModal);
+  if (closeBtn) closeBtn.addEventListener('click', closeModal);
+
+  // Modal action Place Bid trigger
+  const bidBtn = backdrop.querySelector('#modal-bid-action');
+  if (bidBtn) {
+    bidBtn.addEventListener('click', () => {
+      closeModal();
+      if (onPlaceBid) {
+        onPlaceBid(listing.id, listing.title, listing.industryName);
+      }
+    });
+  }
+}
 
 export default RecyclerView;
