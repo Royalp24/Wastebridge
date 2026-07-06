@@ -67,14 +67,14 @@ export const HomeView = {
           <div class="stat-card">
             <div class="stat-icon"><i class="fas fa-weight-hanging"></i></div>
             <div>
-              <div class="stat-number" id="stat-waste">15K+ Tons</div>
+              <div class="stat-number" id="stat-waste">15,000,000+ KGs</div>
               <div class="stat-label">Waste Recycled</div>
             </div>
           </div>
           <div class="stat-card">
             <div class="stat-icon"><i class="fas fa-cloud-sun"></i></div>
             <div>
-              <div class="stat-number" id="stat-co2">480+ Tons</div>
+              <div class="stat-number" id="stat-co2">480,000+ KGs</div>
               <div class="stat-label">CO2 Saved</div>
             </div>
           </div>
@@ -419,8 +419,8 @@ export const HomeView = {
       
       if (industriesEl) industriesEl.textContent = `${stats.industriesCount}+`;
       if (recyclersEl) recyclersEl.textContent = `${stats.recyclersCount}`;
-      if (wasteEl) wasteEl.textContent = `${stats.totalWasteRecycled.toLocaleString()}+ Tons`;
-      if (co2El) co2El.textContent = `${stats.co2Saved.toLocaleString()}+ Tons`;
+      if (wasteEl) wasteEl.textContent = `${(stats.totalWasteRecycled * 1000).toLocaleString()}+ KGs`;
+      if (co2El) co2El.textContent = `${(stats.co2Saved * 1000).toLocaleString()}+ KGs`;
     } catch (e) {
       console.error("Error loading stats:", e);
     }

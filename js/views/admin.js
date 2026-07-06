@@ -90,8 +90,8 @@ export const AdminView = {
               </div>
               <div class="kpi-card">
                 <div class="kpi-details">
-                  <div class="kpi-num" id="kpi-total-recycled">0 Tons</div>
-                  <div class="kpi-label">Tonnage Diverted</div>
+                  <div class="kpi-num" id="kpi-total-recycled">0 KGs</div>
+                  <div class="kpi-label">Waste Diverted</div>
                 </div>
                 <div class="kpi-icon-box gold"><i class="fas fa-recycle"></i></div>
               </div>
@@ -401,17 +401,21 @@ export const AdminView = {
         const totalListings = listings.length;
         const totalBids = allBids.length;
 
-        // Sum tonnages
-        let totalTons = 0;
+        // Sum total quantities in KGs
+        let totalKgs = 0;
         listings.forEach(l => {
-          totalTons += parseFloat(l.quantity) || 0;
+          let val = parseFloat(l.quantity) || 0;
+          if (l.quantity && l.quantity.toString().toLowerCase().includes('ton')) {
+            val = val * 1000;
+          }
+          totalKgs += val;
         });
 
         // Bind KPIs
         document.getElementById('kpi-total-users').textContent = totalUsers;
         document.getElementById('kpi-total-listings').textContent = totalListings;
         document.getElementById('kpi-total-bids').textContent = totalBids;
-        document.getElementById('kpi-total-recycled').textContent = `${Math.round(totalTons)} Tons`;
+        document.getElementById('kpi-total-recycled').textContent = `${Math.round(totalKgs).toLocaleString()} KGs`;
 
         // Load users pending verification
         const tableBody = document.querySelector('#overview-pending-users-table tbody');

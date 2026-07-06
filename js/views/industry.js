@@ -278,9 +278,9 @@ export const IndustryView = {
                     </div>
 
                     <div class="form-group">
-                      <label for="list-quantity">Quantity (e.g., Tons, Kgs)</label>
+                      <label for="list-quantity">Quantity (in KGs)</label>
                       <div class="input-icon-wrapper">
-                        <input type="text" id="list-quantity" placeholder="e.g., 5.5 Tons" required>
+                        <input type="text" id="list-quantity" placeholder="e.g., 500 KGs" required>
                         <i class="fas fa-weight-hanging"></i>
                       </div>
                     </div>
@@ -731,16 +731,19 @@ export const IndustryView = {
         const activeListingsCount = listings.filter(l => l.status === 'active').length;
         const closedListingsCount = listings.filter(l => l.status === 'accepted').length;
         
-        let totalTons = 0;
+        let totalKgs = 0;
         listings.forEach(l => {
-          const tons = parseFloat(l.quantity) || 0;
-          totalTons += tons;
+          let val = parseFloat(l.quantity) || 0;
+          if (l.quantity && l.quantity.toString().toLowerCase().includes('ton')) {
+            val = val * 1000;
+          }
+          totalKgs += val;
         });
 
         // Update KPI card text
         document.getElementById('kpi-active-listings').textContent = activeListingsCount;
         document.getElementById('kpi-bids-received').textContent = allBids.length;
-        document.getElementById('kpi-waste-listed').textContent = `${Math.round(totalTons * 10) / 10} Tons`;
+        document.getElementById('kpi-waste-listed').textContent = `${Math.round(totalKgs).toLocaleString()} KGs`;
         document.getElementById('kpi-closed-listings').textContent = closedListingsCount;
 
         // Render Recent 5 Bids
