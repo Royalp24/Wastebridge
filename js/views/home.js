@@ -129,52 +129,52 @@ export const HomeView = {
             <div class="category-card" data-category="Metal">
               <div class="category-icon"><i class="fas fa-cog"></i></div>
               <h3>Metal</h3>
-              <span>220+ Listings</span>
+              
             </div>
             <div class="category-card" data-category="Plastic">
               <div class="category-icon"><i class="fas fa-prescription-bottle"></i></div>
               <h3>Plastic</h3>
-              <span>450+ Listings</span>
+              
             </div>
             <div class="category-card" data-category="Paper">
               <div class="category-icon"><i class="fas fa-file-alt"></i></div>
               <h3>Paper</h3>
-              <span>290+ Listings</span>
+              
             </div>
             <div class="category-card" data-category="Glass">
               <div class="category-icon"><i class="fas fa-wine-bottle"></i></div>
               <h3>Glass</h3>
-              <span>190+ Listings</span>
+              
             </div>
             <div class="category-card" data-category="Rubber">
               <div class="category-icon"><i class="fas fa-compact-disc"></i></div>
               <h3>Rubber</h3>
-              <span>120+ Listings</span>
+              
             </div>
             <div class="category-card" data-category="Electronic Waste">
               <div class="category-icon"><i class="fas fa-laptop"></i></div>
               <h3>Electronic</h3>
-              <span>210+ Listings</span>
+              
             </div>
             <div class="category-card" data-category="Textile">
               <div class="category-icon"><i class="fas fa-tshirt"></i></div>
               <h3>Textile</h3>
-              <span>180+ Listings</span>
+              
             </div>
             <div class="category-card" data-category="Chemical">
               <div class="category-icon"><i class="fas fa-flask"></i></div>
               <h3>Chemical</h3>
-              <span>130+ Listings</span>
+              
             </div>
             <div class="category-card" data-category="Organic">
               <div class="category-icon"><i class="fas fa-leaf"></i></div>
               <h3>Organic</h3>
-              <span>160+ Listings</span>
+              
             </div>
             <div class="category-card" data-category="Wood">
               <div class="category-icon"><i class="fas fa-tree"></i></div>
               <h3>Wood</h3>
-              <span>110+ Listings</span>
+              
             </div>
           </div>
         </div>
@@ -375,7 +375,7 @@ export const HomeView = {
               </div>
               <div class="contact-item">
                 <i class="fas fa-map-marker-alt"></i>
-                <span>Mon - Sat: 9:00 AM - 6:00 PM</span>
+                <span>Gujarat,India</span>
               </div>
             </div>
           </div>
@@ -416,7 +416,7 @@ export const HomeView = {
       const recyclersEl = document.getElementById('stat-recyclers');
       const wasteEl = document.getElementById('stat-waste');
       const co2El = document.getElementById('stat-co2');
-      
+
       if (industriesEl) industriesEl.textContent = `${stats.industriesCount}+`;
       if (recyclersEl) recyclersEl.textContent = `${stats.recyclersCount}`;
       if (wasteEl) wasteEl.textContent = `${(stats.totalWasteRecycled * 1000).toLocaleString()}+ KGs`;
@@ -473,11 +473,10 @@ export const HomeView = {
 
           return `
             <div class="listing-card" style="position: relative;">
-              ${
-                l.imageUrl 
-                ? `<div class="listing-image view-card-details" data-id="${l.id}" style="background-image: url('${escapeHtml(l.imageUrl)}'); height: 180px; background-size: cover; background-position: center; border-top-left-radius: var(--radius-md); border-top-right-radius: var(--radius-md); position: relative; cursor: pointer;"></div>`
-                : `<div class="listing-image-placeholder view-card-details" data-id="${l.id}" style="cursor: pointer;"><i class="fas ${categoryIcon}"></i></div>`
-              }
+              ${l.imageUrl
+              ? `<div class="listing-image view-card-details" data-id="${l.id}" style="background-image: url('${escapeHtml(l.imageUrl)}'); height: 180px; background-size: cover; background-position: center; border-top-left-radius: var(--radius-md); border-top-right-radius: var(--radius-md); position: relative; cursor: pointer;"></div>`
+              : `<div class="listing-image-placeholder view-card-details" data-id="${l.id}" style="cursor: pointer;"><i class="fas ${categoryIcon}"></i></div>`
+            }
               <div class="listing-content">
                 <div class="listing-header">
                   <span class="listing-tag">${l.category}</span>
@@ -503,11 +502,10 @@ export const HomeView = {
                   </span>
                   <div style="display: flex; gap: 0.35rem;">
                     <button class="btn btn-secondary btn-sm view-details-btn" data-id="${l.id}" style="padding: 0.4rem 0.65rem; border-color: var(--neutral-border); color: var(--neutral-body); font-size: 0.8rem;"><i class="fas fa-info-circle"></i> Details</button>
-                    ${
-                      l.status === 'accepted' 
-                      ? `<span class="badge badge-accepted" style="padding: 0.4rem 0.65rem; font-size: 0.725rem;"><i class="fas fa-check-circle"></i> Closed</span>` 
-                      : `<button class="btn btn-primary btn-sm apply-bid-btn" data-id="${l.id}" style="padding: 0.4rem 0.65rem; font-size: 0.8rem;">Apply Bid</button>`
-                    }
+                    ${l.status === 'accepted'
+              ? `<span class="badge badge-accepted" style="padding: 0.4rem 0.65rem; font-size: 0.725rem;"><i class="fas fa-check-circle"></i> Closed</span>`
+              : `<button class="btn btn-primary btn-sm apply-bid-btn" data-id="${l.id}" style="padding: 0.4rem 0.65rem; font-size: 0.8rem;">Apply Bid</button>`
+            }
                   </div>
                 </div>
               </div>
@@ -623,11 +621,11 @@ export const HomeView = {
         const cat = card.getAttribute('data-category');
         filterState.category = cat;
         if (categoryFilter) categoryFilter.value = cat.toLowerCase();
-        
+
         // Scroll to listings section
         const anchor = document.getElementById('listings-anchor');
         if (anchor) anchor.scrollIntoView({ behavior: 'smooth' });
-        
+
         renderListings();
       });
     });
@@ -684,11 +682,10 @@ function openDetailsModal(listing, currentUser) {
   backdrop.innerHTML = `
     <div class="wb-modal-card" style="max-width: 600px; width: 95%; max-height: 90vh; border-radius: var(--radius-lg); background: var(--white); overflow-y: auto; box-shadow: var(--shadow-xl); position: relative; animation: modalSlideUp 0.3s ease-out; margin: 2rem auto; display: flex; flex-direction: column;">
       <!-- Large Header Image -->
-      ${
-        listing.imageUrl
-        ? `<div style="background-image: url('${escapeHtml(listing.imageUrl)}'); height: 260px; background-size: cover; background-position: center; border-bottom: 1px solid var(--neutral-border); position: relative; flex-shrink: 0;"></div>`
-        : `<div style="height: 180px; background: linear-gradient(135deg, var(--primary-light) 0%, #bbf7d0 100%); display: flex; align-items: center; justify-content: center; font-size: 5rem; color: var(--primary); flex-shrink: 0;"><i class="fas ${categoryIcon}"></i></div>`
-      }
+      ${listing.imageUrl
+      ? `<div style="background-image: url('${escapeHtml(listing.imageUrl)}'); height: 260px; background-size: cover; background-position: center; border-bottom: 1px solid var(--neutral-border); position: relative; flex-shrink: 0;"></div>`
+      : `<div style="height: 180px; background: linear-gradient(135deg, var(--primary-light) 0%, #bbf7d0 100%); display: flex; align-items: center; justify-content: center; font-size: 5rem; color: var(--primary); flex-shrink: 0;"><i class="fas ${categoryIcon}"></i></div>`
+    }
       
       <!-- Modal Close Icon -->
       <button id="close-details-modal-icon" style="position: absolute; top: 1rem; right: 1rem; width: 36px; height: 36px; border-radius: 50%; background: rgba(0,0,0,0.5); color: var(--white); display: flex; align-items: center; justify-content: center; font-size: 1.15rem; transition: var(--transition-smooth); border: none; z-index: 100; cursor: pointer;">
@@ -734,11 +731,10 @@ function openDetailsModal(listing, currentUser) {
           </span>
           <div style="display: flex; gap: 0.5rem;">
             <button id="modal-close-btn" class="btn btn-secondary btn-sm" style="padding: 0.5rem 1rem;">Close</button>
-            ${
-              listing.status === 'accepted' 
-              ? `<span class="badge badge-accepted" style="padding: 0.5rem 1rem;"><i class="fas fa-check-circle"></i> Closed</span>` 
-              : `<button id="modal-bid-action" class="btn btn-primary btn-sm" style="padding: 0.5rem 1rem;">Apply Bid</button>`
-            }
+            ${listing.status === 'accepted'
+      ? `<span class="badge badge-accepted" style="padding: 0.5rem 1rem;"><i class="fas fa-check-circle"></i> Closed</span>`
+      : `<button id="modal-bid-action" class="btn btn-primary btn-sm" style="padding: 0.5rem 1rem;">Apply Bid</button>`
+    }
           </div>
         </div>
       </div>
